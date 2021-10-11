@@ -1,0 +1,914 @@
+##Input_Table=table
+##Longitude_Field=field Input_Table
+##Latitude_Field=field Input_Table
+##Coordinate_Reference_System=crs
+##Output_Layer=output vector
+#Compulsary qgis import statements for a code to sufficiently operate 
+import os
+from qgis.core import *
+import processing
+from qgis.core import QgsVectorLayer
+from qgis.core import QgsRasterLayer
+from qgis.core import QgsProject
+from qgis.utils import iface
+from PyQt5.QtCore import QVariant
+#from processing.tools.vector import VectorWriter
+Input_Table = 'C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/tree_csv_input'
+lon_field = 'point_longitude'
+lat_field = 'point_latitude'
+crs = 7855
+Output_Layer = 'C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/testtree'
+
+#spatRef is being created from the first value from a split coordinate code and a processed value from the current CRS projection used in the project. The split occurs in the ":" element of the code as this seperates components of the location code.
+#This value is then turned into an integer so it can be processed in QgsCoordinateSystem to create a coordinate compatible with the CRS in QGIS. This value is stored as spatRef.
+spatRef = QgsCoordinateReferenceSystem(crs, QgsCoordinateReferenceSystem.EpsgCrsId)
+
+ #the vector layer function creates a vector class for the inputtted data to be placed within. The three included values are the values contained in the desired crs.
+inp_tab = QgsVectorLayer(Input_Table, 'Input_Table', 'ogr')
+inp_tab_data = inp_tab.dataProvider()
+fields = inp_tab.fields()
+#The output layer has its fields created, these contain corresponding features from the input with previous features, such as spatRef, being incorporated into it.
+tmp_layer = QgsVectorLayer("Point", "temp", "memory")
+tmp_layer_data = tmp_layer.dataProvider()
+tmp_layer_data.addAttributes(fields)
+tmp_layer.updateFields()
+ 
+pt = QgsPoint()
+outFeature = QgsFeature()
+ #The following for statement transfers and translates information from the fields of the inputted crs file into new output classtypes. These are apart of the nearly delivered 'outLayer' which conatins the mewly created vector details.
+for feat in inp_tab.getFeatures():
+    attrs = feat.attributes()
+    #Numeric characteristics such as longitude and latitude are converted to floats for further future processing as numbers
+    pt.setX(float(feat[Longitude_Field]))
+    pt.setY(float(feat[Latitude_Field]))
+    outFeature.setAttributes(attrs)
+    outFeature.setGeometry(QgsGeometry.fromPoint(pt))
+    tmp_layer_data.addFeature(outFeature)
+
+QgsVectorFileWriter.writeAsVectorFormat(tmp_layer,Output_Layer, 'utf-8', spatRef, 'ESRI Shapefile')  
+del tmp_layer
+
+Origlayer=QgsVectorLayer('/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/testtree.shp','trees',"ogr")
+QgsProject.instance().addMapLayer(Origlayer)
+layer=iface.activeLayer()
+
+layer.startEditing()
+layer_provider=layer.dataProvider()
+layer_provider.addAttributes([QgsField("Sci_name",QVariant.String)])
+layer.updateFields()
+layer.commitChanges()
+
+layer.startEditing()
+layer_provider=layer.dataProvider()
+layer_provider.addAttributes([QgsField("Avr_Height",QVariant.Double)])
+layer.updateFields()
+layer.commitChanges()
+
+layer.startEditing()
+layer_provider=layer.dataProvider()
+layer_provider.addAttributes([QgsField("Avr_Can_Rad",QVariant.Double)])
+layer.updateFields()
+layer.commitChanges()
+
+layer.startEditing()
+layer_provider=layer.dataProvider()
+layer_provider.addAttributes([QgsField("Avr_Tru_Rad",QVariant.Double)])
+layer.updateFields()
+layer.commitChanges()
+
+layer.startEditing()
+layer_provider=layer.dataProvider()
+layer_provider.addAttributes([QgsField("Leaf_Width",QVariant.Double)])
+layer.updateFields()
+layer.commitChanges()
+
+layer.startEditing()
+layer_provider=layer.dataProvider()
+layer_provider.addAttributes([QgsField("Leaf_Length",QVariant.Double)])
+layer.updateFields()
+layer.commitChanges()
+
+layer.startEditing()
+layer_provider=layer.dataProvider()
+layer_provider.addAttributes([QgsField("Flower_Season",QVariant.String)])
+layer.updateFields()
+layer.commitChanges()
+
+layer.startEditing()
+layer_provider=layer.dataProvider()
+layer_provider.addAttributes([QgsField("Dom_Colour",QVariant.String)])
+layer.updateFields()
+layer.commitChanges()
+
+it=layer.getFeatures()
+layer.startEditing()
+for feature in it:
+    feature ["Sci_name"]
+    if Tree_Species=="Silver wattle":
+        "Acacia dealbata"
+    elif Tree_Species=="Black wattle":
+        "Acacia mearnsii"
+    elif Tree_Species=="Blackwood":
+        "Acacia melanoxylon"
+    elif Tree_Species=="Golden wattle":
+        "Acacia pycnantha"
+    elif Tree_Species=="Drooping SheOak":
+        "Allocasuarina verticillata"
+    elif Tree_Species=="Silver Banksia":
+        "Banksia marginata"
+    elif Tree_Species=="Black Gum":
+        "Eucalyptus aggregata"
+    elif Tree_Species=="River Red-Gum":
+        "Eucalyptus camaldulensis"
+    elif Tree_Species=="Long-leaved box":
+        "Eucalyptus goniocalyx"
+    elif Tree_Species=="Yellow box":
+        "Eucalyptus melliodora"
+    elif Tree_Species=="Messmate":
+        "Eucalyptus obliqua"
+    elif Tree_Species=="Swamp Gum":
+        "Eucalyptus ovata"
+    elif Tree_Species=="Snow Gum ":
+        "Eucalyptus pauciflora"
+    elif Tree_Species=="Narrow-leaved Peppermint":
+        "Eucalyptus radiata"
+    elif Tree_Species=="Mountain Ash":
+        "Eucalyptus regnans"
+    elif Tree_Species=="Candlebark":
+        "Eucalyptus rubida"
+    elif Tree_Species=="Manna Gum":
+        "Eucalyptus viminalis"
+    elif Tree_Species=="Cherry Ballart":
+        "Exocarpos cupressiformis"
+    elif Tree_Species=="Hazel Pomaderris":
+        "Pomaderris aspera"
+
+for feature in it:
+    feature  ["Avr_Height"]
+    if Tree_Species=="Silver wattle":
+        '13'
+    elif Tree_Species=="Black wattle":
+        '15'
+    elif Tree_Species=="Blackwood":
+        '25'
+    elif Tree_Species=="Golden wattle":
+        '8'
+    elif Tree_Species=="Drooping SheOak":
+        '7'
+    elif Tree_Species=="Silver Banksia":
+        '4'
+    elif Tree_Species=="Black Gum":
+        '14'
+    elif Tree_Species=="River Red-Gum":
+        '25'
+    elif Tree_Species=="Long-leaved box":
+        '15'
+    elif Tree_Species=="Yellow box":
+        '20'
+    elif Tree_Species=="Messmate":
+        '40'
+    elif Tree_Species=="Swamp Gum":
+        '17'
+    elif Tree_Species=="Snow Gum ":
+        '12'
+    elif Tree_Species=="Narrow-leaved Peppermint":
+        '11'
+    elif Tree_Species=="Mountain Ash":
+        '9'
+    elif Tree_Species=="Candlebark":
+        '20'
+    elif Tree_Species=="Manna Gum":
+        '10'
+    elif Tree_Species=="Cherry Ballart":
+        '4'
+    elif Tree_Species=="Hazel Pomaderris":
+        '7'
+    
+for feature in it:
+    feature  ["Avr_Tru_Rad"]
+    if Tree_Species=="Silver wattle":
+        '0.15'
+    elif Tree_Species=="Black wattle":
+        '0.15'
+    elif Tree_Species=="Blackwood":
+        '0.5'
+    elif Tree_Species=="Golden wattle":
+        '0.2'
+    elif Tree_Species=="Drooping SheOak":
+        '0.2'
+    elif Tree_Species=="Silver Banksia":
+        '0.2'
+    elif Tree_Species=="Black Gum":
+        '0.3'
+    elif Tree_Species=="River Red-Gum":
+        '0.7'
+    elif Tree_Species=="Long-leaved box":
+        '0.2'
+    elif Tree_Species=="Yellow box":
+        '0.3'
+    elif Tree_Species=="Messmate":
+        '0.9'
+    elif Tree_Species=="Swamp Gum":
+        '0.5'
+    elif Tree_Species=="Snow Gum ":
+        '1.2'
+    elif Tree_Species=="Narrow-leaved Peppermint":
+        '0.5'
+    elif Tree_Species=="Mountain Ash":
+        '1.2'
+    elif Tree_Species=="Candlebark":
+        '0.6'
+    elif Tree_Species=="Manna Gum":
+        '0.9'
+    elif Tree_Species=="Cherry Ballart":
+        '0.2'
+    elif Tree_Species=="Hazel Pomaderris":
+        '0.2'
+
+for feature in it:
+    feature  ["Avr_Can_Rad"]
+    if Tree_Species=="Silver wattle":
+        '2'
+    elif Tree_Species=="Black wattle":
+        '2'
+    elif Tree_Species=="Blackwood":
+        '3'
+    elif Tree_Species=="Golden wattle":
+        '2.5'
+    elif Tree_Species=="Drooping SheOak":
+        '3'
+    elif Tree_Species=="Silver Banksia":
+        '1.5'
+    elif Tree_Species=="Black Gum":
+        '3.5'
+    elif Tree_Species=="River Red-Gum":
+        '4.5'
+    elif Tree_Species=="Long-leaved box":
+        '4.5'
+    elif Tree_Species=="Yellow box":
+        '4'
+    elif Tree_Species=="Messmate":
+        '3'
+    elif Tree_Species=="Swamp Gum":
+        '3'
+    elif Tree_Species=="Snow Gum ":
+        '3'
+    elif Tree_Species=="Narrow-leaved Peppermint":
+        '2.5'
+    elif Tree_Species=="Mountain Ash":
+        '2'
+    elif Tree_Species=="Candlebark":
+        '3.5'
+    elif Tree_Species=="Manna Gum":
+        '4.5'
+    elif Tree_Species=="Cherry Ballart":
+        '2'
+    elif Tree_Species=="Hazel Pomaderris":
+        '1.5'
+
+for feature in it:
+    feature  ["Leaf_Width"]
+    if Tree_Species=="Silver wattle":
+        '0.001'
+    elif Tree_Species=="Black wattle":
+        '0.04'
+    elif Tree_Species=="Blackwood":
+        '0.08'
+    elif Tree_Species=="Golden wattle":
+        '0.05'
+    elif Tree_Species=="Drooping SheOak":
+        '0.04'
+    elif Tree_Species=="Silver Banksia":
+        '0.03'
+    elif Tree_Species=="Black Gum":
+        '0.1'
+    elif Tree_Species=="River Red-Gum":
+        '0.08'
+    elif Tree_Species=="Long-leaved box":
+        '0.5'
+    elif Tree_Species=="Yellow box":
+        '0.08'
+    elif Tree_Species=="Messmate":
+        '0.06'
+    elif Tree_Species=="Swamp Gum":
+        '0.1'
+    elif Tree_Species=="Snow Gum ":
+        '0.15'
+    elif Tree_Species=="Narrow-leaved Peppermint":
+        '0.05'
+    elif Tree_Species=="Mountain Ash":
+        '0.04'
+    elif Tree_Species=="Candlebark":
+        '0.12'
+    elif Tree_Species=="Manna Gum":
+        '0.1'
+    elif Tree_Species=="Cherry Ballart":
+        '0.01'
+    elif Tree_Species=="Hazel Pomaderris":
+        '0.1'
+
+for feature in it:
+    feature  ["Leaf_Length"]
+    if Tree_Species=="Silver wattle":
+        '0.01'
+    elif Tree_Species=="Black wattle":
+        '0.15'
+    elif Tree_Species=="Blackwood":
+        '0.15'
+    elif Tree_Species=="Golden wattle":
+        '0.1'
+    elif Tree_Species=="Drooping SheOak":
+        '0.02'
+    elif Tree_Species=="Silver Banksia":
+        '0.1'
+    elif Tree_Species=="Black Gum":
+        '0.1'
+    elif Tree_Species=="River Red-Gum":
+        '0.25'
+    elif Tree_Species=="Long-leaved box":
+        '0.2'
+    elif Tree_Species=="Yellow box":
+        '0.2'
+    elif Tree_Species=="Messmate":
+        '0.15'
+    elif Tree_Species=="Swamp Gum":
+        '0.15'
+    elif Tree_Species=="Snow Gum ":
+        '0.25'
+    elif Tree_Species=="Narrow-leaved Peppermint":
+        '0.15'
+    elif Tree_Species=="Mountain Ash":
+        '0.08'
+    elif Tree_Species=="Candlebark":
+        '0.15'
+    elif Tree_Species=="Manna Gum":
+        '0.25'
+    elif Tree_Species=="Cherry Ballart":
+        '0.2'
+    elif Tree_Species=="Hazel Pomaderris":
+        '0.15'
+
+
+for feature in it:
+    feature  ["Flower_Season"]
+    if Tree_Species=="Silver wattle":
+        '13'
+    elif Tree_Species=="Black wattle":
+        '15'
+    elif Tree_Species=="Blackwood":
+        '25'
+    elif Tree_Species=="Golden wattle":
+        '8'
+    elif Tree_Species=="Drooping SheOak":
+        '7'
+    elif Tree_Species=="Silver Banksia":
+        '4'
+    elif Tree_Species=="Black Gum":
+        '14'
+    elif Tree_Species=="River Red-Gum":
+        '25'
+    elif Tree_Species=="Long-leaved box":
+        '15'
+    elif Tree_Species=="Yellow box":
+        '20'
+    elif Tree_Species=="Messmate":
+        '40'
+    elif Tree_Species=="Swamp Gum":
+        '17'
+    elif Tree_Species=="Snow Gum ":
+        '12'
+    elif Tree_Species=="Narrow-leaved Peppermint":
+        '11'
+    elif Tree_Species=="Mountain Ash":
+        '9'
+    elif Tree_Species=="Candlebark":
+        '20'
+    elif Tree_Species=="Manna Gum":
+        '10'
+    elif Tree_Species=="Cherry Ballart":
+        '4'
+    elif Tree_Species=="Hazel Pomaderris":
+        '7'
+
+for feature in it:
+    feature  ["Dom_Colour"]
+    if Tree_Species=="Silver wattle":
+        'Yellow'
+    elif Tree_Species=="Black wattle":
+        'Yellow'
+    elif Tree_Species=="Blackwood":
+        'Grey'
+    elif Tree_Species=="Golden wattle":
+        'Yellow'
+    elif Tree_Species=="Drooping SheOak":
+        'Green'
+    elif Tree_Species=="Silver Banksia":
+        'Orange'
+    elif Tree_Species=="Black Gum":
+        'Red'
+    elif Tree_Species=="River Red-Gum":
+        'White'
+    elif Tree_Species=="Long-leaved box":
+        'Green'
+    elif Tree_Species=="Yellow box":
+        'Green'
+    elif Tree_Species=="Messmate":
+        'Brown'
+    elif Tree_Species=="Swamp Gum":
+        'Green'
+    elif Tree_Species=="Snow Gum ":
+        'White'
+    elif Tree_Species=="Narrow-leaved Peppermint":
+        'Green'
+    elif Tree_Species=="Mountain Ash":
+        'Green'
+    elif Tree_Species=="Candlebark":
+        'Orange'
+    elif Tree_Species=="Manna Gum":
+        'Green'
+    elif Tree_Species=="Cherry Ballart":
+        'Red'
+    elif Tree_Species=="Hazel Pomaderris":
+        'Yellow'
+
+#layerName = 'layer'
+#outFile = 'C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/buffer1'
+#bufDist = 50
+#layers = QgsProject.instance().mapLayersByName(layerName)
+#fields = layer.fields()
+#feats = layer.getFeatures()
+
+#writer = QgsVectorFileWriter(outFile, 'UTF-8', fields, \
+#QgsWkbTypes.Polygon, layer.sourceCrs(), 'ESRI Shapefile')
+
+#for feat in feats:
+   # geom = feat.geometry()
+   # buffer = geom.buffer(bufDist, 5)
+   # feat.setGeometry(buffer)
+   # writer.addFeature(feat)
+#print('done')
+#iface.addVectorLayer(outFile, '', 'ogr')
+#del(writer)
+
+for feature in it:
+    feature ["Tree Species"]
+    if Tree_Species=="Silver wattle":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='SWTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 0.15,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Black wattle":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='BWTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 0.15,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Blackwood":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='BlkWTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 0.5,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Golden Wattle":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='GldWTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 0.2,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Drooping SheOak":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='SheOakTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 0.2,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Silver Banksia":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='SBankTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 0.2,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Black Gum":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='BlkGumTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 0.3,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="River Red-Gum":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='RRGTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 0.7,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Long-leaved box":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='YBTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 0.2,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Yellow box":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='YBTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 0.3,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Messmate":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='MessTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 0.9,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Swamp Gum":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='SwGTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 0.5,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Snow Gum":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='SnowGTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 1.2,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Narrow-leaved Peppermint":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='NLPTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 0.5,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Mountain Ash":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='MountAshTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 1.2,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Candlebark":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='CBTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 0.6,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Manna Gum":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='MannaGTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 0.9,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Cherry Ballart":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='CBTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 0.2,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Hazel Pomaderris":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='HPTrkbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 0.2,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+        
+        
+for feature in it:
+    feature ["Tree Species"]
+    if Tree_Species=="Silver wattle":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='SWCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 2,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Black wattle":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='BWCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 2,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Blackwood":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='BlkWCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 3,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Golden Wattle":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='GldWCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 2.5,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Drooping SheOak":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='SheOakCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 3,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Silver Banksia":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='SBankCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 1.5,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Black Gum":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='BlkGumCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 3.5,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="River Red-Gum":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='RRGCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 4.5,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Long-leaved box":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='YBCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 4.5,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Yellow box":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='YBCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 4,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Messmate":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='MessCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 3,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Swamp Gum":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='SwGCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 3,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Snow Gum":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='SnowGCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 3,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Narrow-leaved Peppermint":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='NLPCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 2.5,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Mountain Ash":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='MountAshCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 2,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Candlebark":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='CBCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 3.5,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Manna Gum":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='MannaGCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 4.5,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Cherry Ballart":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='CBCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 2,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
+    elif Tree_Species=="Hazel Pomaderris":
+        buffilepath='C:/Users/Poopy Pants/Desktop/Uni/Year 2 sem 2/Geospatial programming/Week 10/'
+        buffername='HPCrnbuff.shp'   
+        blayer = processing.run("native:buffer", {'INPUT': Output_Layer,
+                                'DISTANCE': 1.5,
+                                'SEGMENTS': 30,
+                                'END_CAP_STYLE':0,
+                                'JOIN_STYLE':0,
+                                'DISSOLVE': False,
+                                'OUTPUT':buffilepath+buffername})
+
+        bldgLayer = iface.addVectorLayer(buffilepath+buffername,buffername[:-4],'ogr')
